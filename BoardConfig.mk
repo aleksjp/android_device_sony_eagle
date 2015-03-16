@@ -16,7 +16,7 @@ include device/sony/msm8226-common/BoardConfigCommon.mk
 
 TARGET_BOOTLOADER_BOARD_NAME := D2303
 
-RECOVERY_VARIANT := philz
+#RECOVERY_VARIANT := philz
 
 # Kernel properties
 TARGET_PREBUILT_KERNEL := device/sony/eagle/prebuilt/kernel
@@ -31,6 +31,20 @@ BOARD_USERDATAIMAGE_PARTITION_SIZE := 5460983808
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 BOARD_VOLD_MAX_PARTITIONS := 26
+
+# TWRP flags
+DEVICE_RESOLUTION := 540x960
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+TW_HAS_NO_RECOVERY_PARTITION := true
+TW_FLASH_FROM_STORAGE := true
+TW_EXTERNAL_STORAGE_PATH := "/external_sd"
+TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
+TW_DEFAULT_EXTERNAL_STORAGE := true
+TW_INCLUDE_JB_CRYPTO := false
+TW_INCLUDE_L_CRYPTO := true
+TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
+TW_MAX_BRIGHTNESS := 4095
+TW_NO_USB_STORAGE := true
 
 # Recovery
 TARGET_RECOVERY_FSTAB := device/sony/eagle/rootdir/fstab.qcom

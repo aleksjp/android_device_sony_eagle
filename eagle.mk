@@ -37,7 +37,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
     frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
 
-# This device is xhdpi.
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
@@ -56,6 +55,20 @@ PRODUCT_COPY_FILES += \
 # Device specific part for two-stage boot
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/bootrec-device:recovery/bootrec-device
-   
+
+# Display
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.sf.lcd_density=240
+     
+ADDITIONAL_DEFAULT_PROPERTIES += \
+     ro.secure=0 \
+     ro.allow.mock.location=1 \
+     ro.debuggable=1
+     
+PRODUCT_PROPERTY_OVERRIDES += \
+     setenforce=0 \
+     ro.boot.selinux=0 \
+     selinux.reload_policy=0
+       
 # call dalvik heap config
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk)
