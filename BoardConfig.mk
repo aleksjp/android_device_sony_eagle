@@ -18,8 +18,14 @@ TARGET_BOOTLOADER_BOARD_NAME := D2303
 
 #RECOVERY_VARIANT := philz
 
+TARGET_OTA_ASSERT_DEVICE := D2302,D2303,D2305,D2306,eagle,eagle_lte
+
 # Kernel properties
 TARGET_PREBUILT_KERNEL := device/sony/eagle/prebuilt/kernel
+
+TARGET_SPECIFIC_HEADER_PATH += device/sony/eagle/include
+
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/sony/eagle/bluetooth
 
 TARGET_BOARD_PLATFORM := msm8226
 

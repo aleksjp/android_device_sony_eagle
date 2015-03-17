@@ -21,8 +21,12 @@ $(call inherit-product, device/common/gps/gps_us_supl.mk)
 # msm8226 common
 $(call inherit-product, device/sony/msm8226-common/msm8226.mk)
 
+LOCAL_PATH := device/sony/eagle
+
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
+
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-	LOCAL_KERNEL := device/sony/eagle/prebuilt/kernel
+	LOCAL_KERNEL := $(LOCAL_PATH)/prebuilt/kernel
 else
 	LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
