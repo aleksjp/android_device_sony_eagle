@@ -19,9 +19,6 @@ TARGET_SCREEN_WIDTH := 540
 # Inherit from eagle device
 $(call inherit-product, device/sony/eagle/full_eagle.mk)
 
-# Inherit from common resources
-$(call inherit-product, device/sony/common/resources.mk)
-
 # Inherit CM common stuff.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 

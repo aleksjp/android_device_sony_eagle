@@ -1,2 +1,2 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/eagle.mk
+    $(LOCAL_DIR)/full_eagle.mk

@@ -14,7 +14,7 @@
 USE_CAMERA_STUB := true
 
 # inherit from the proprietary version
--include vendor/sony/eagle1/BoardConfigVendor.mk
+-include vendor/sony/eagle/BoardConfigVendor.mk
 
 TARGET_SCREEN_HEIGHT := 960
 TARGET_SCREEN_WIDTH := 540

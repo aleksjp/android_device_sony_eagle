@@ -17,10 +17,10 @@ PRODUCT_COPY_FILES += \
     
 # Device specific init
 PRODUCT_COPY_FILES += \
-     $(COMMON_PATH)/recovery/recovery.fstab:recovery/root/etc/fstab.qcom \
      $(COMMON_PATH)/rootdir/ueventd.qcom.rc:root/ueventd.qcom.rc \
-     $(COMMON_PATH)/recovery/init.recovery.qcom.rc:recovery/root/init.recovery.qcom.rc \
-        
+     $(COMMON_PATH)/rootdir/init.sony.usb.rc:root/init.sony.usb.rc \
+     $(COMMON_PATH)/recovery/recovery.fstab:recovery/root/etc/fstab.qcom \
+     $(COMMON_PATH)/recovery/init.recovery.qcom.rc:recovery/root/init.recovery.qcom.rc           
 
 # Sbin
 PRODUCT_COPY_FILES += \
