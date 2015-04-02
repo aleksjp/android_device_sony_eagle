@@ -20,7 +20,7 @@ TARGET_SCREEN_HEIGHT := 960
 TARGET_SCREEN_WIDTH := 540
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE := D2303,eagle
+TARGET_OTA_ASSERT_DEVICE := D2302,D2303,D2305,D2306,eagle,eagle_lte
 
 # Platform
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno305
@@ -42,12 +42,20 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 # Kernel properties
 BOARD_CUSTOM_BOOTIMG_MK := device/sony/eagle/mkbootimg.mk
 TARGET_PREBUILT_KERNEL := device/sony/eagle/prebuilt/kernel
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.console=ttyHSL0 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 
-BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=qcom msm_rtb.filter=0x37 no_console_suspend=1
+BOARD_KERNEL_BASE := 0x00008000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_MKBOOTIMG_ARGS  := --ramdisk_offset 0x02000000 --tags_offset 0x01E00000
+BOARD_MKBOOTIMG_ARGS  := --ramdisk_offset 0x03000000 --tags_offset 0x01E00000
 
-TARGET_SPECIFIC_HEADER_PATH += device/sony/eagle/include
+# Filesystem
+BOARD_SYSTEM_DEVICE := /dev/block/mmcblk0p26
+BOARD_SYSTEM_FILESYSTEM := ext4
+BOARD_DATA_DEVICE := /dev/block/mmcblk0p29
+BOARD_DATA_FILESYSTEM := ext4
+BOARD_CACHE_DEVICE := /dev/block/mmcblk0p27
+BOARD_CACHE_FILESYSTEM := ext4
+BOARD_SDCARD_DEVICE_PRIMARY := /dev/block/mmcblk1p1
+BOARD_HAS_NO_MISC_PARTITION := true
 
 # Partition information
 BOARD_BOOTIMAGE_PARTITION_SIZE := 20971520
@@ -66,7 +74,21 @@ TARGET_RECOVERY_QCOM_RTC_FIX := true
 # Recovery
 TARGET_RECOVERY_FSTAB  := device/sony/eagle/recovery/recovery.fstab
 TARGET_RECOVERY_INITRC := device/sony/eagle/recovery/init.qcom.rc
-
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 BOARD_HAS_NO_SELECT_BUTTON := true
+TARGET_RECOVERY_NO_MSM_BSP := true
+
+# TWRP flags
+DEVICE_RESOLUTION := 540x960
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+TW_HAS_NO_RECOVERY_PARTITION := true
+TW_FLASH_FROM_STORAGE := true
+TW_EXTERNAL_STORAGE_PATH := "/external_sd"
+TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
+TW_DEFAULT_EXTERNAL_STORAGE := true
+TW_INCLUDE_JB_CRYPTO := false
+TW_INCLUDE_L_CRYPTO := true
+TW_BRIGHTNESS_PATH := /sys/class/leds/wled:backlight/brightness
+TW_MAX_BRIGHTNESS := 4095
+TW_NO_USB_STORAGE := true
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
