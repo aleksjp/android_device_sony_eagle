@@ -16,11 +16,10 @@ USE_CAMERA_STUB := true
 # inherit from the proprietary version
 -include vendor/sony/eagle/BoardConfigVendor.mk
 
-TARGET_SCREEN_HEIGHT := 960
-TARGET_SCREEN_WIDTH := 540
-
 # Assert
 TARGET_OTA_ASSERT_DEVICE := D2302,D2303,D2305,D2306,eagle,eagle_lte
+
+RECOVERY_VARIANT := twrp
 
 # Platform
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno305
@@ -40,12 +39,13 @@ TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
 ARCH_ARM_HAVE_TLS_REGISTER := true
 
 # Kernel properties
-BOARD_CUSTOM_BOOTIMG_MK := device/sony/eagle/mkbootimg.mk
-TARGET_PREBUILT_KERNEL := device/sony/eagle/prebuilt/kernel
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=qcom msm_rtb.filter=0x37 no_console_suspend=1
-BOARD_KERNEL_BASE := 0x00008000
+TARGET_KERNEL_CONFIG := eagle_lte_defconfig
+TARGET_KERNEL_SOURCE := kernel/sony/eagle/android_kernel_sony_eagle
+
+# Kernel information
+BOARD_KERNEL_CMDLINE :=
+BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
-BOARD_MKBOOTIMG_ARGS  := --ramdisk_offset 0x03000000 --tags_offset 0x01E00000
 
 # Filesystem
 BOARD_SYSTEM_DEVICE := /dev/block/mmcblk0p26
@@ -68,13 +68,10 @@ BOARD_VOLD_MAX_PARTITIONS := 26
 
 TARGET_USERIMAGES_USE_EXT4 := true
 
-# Time
-TARGET_RECOVERY_QCOM_RTC_FIX := true
-
 # Recovery
-TARGET_RECOVERY_FSTAB  := device/sony/eagle/recovery/recovery.fstab
+TARGET_RECOVERY_FSTAB  := device/sony/eagle/twrp.fstab
 TARGET_RECOVERY_INITRC := device/sony/eagle/recovery/init.qcom.rc
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_PIXEL_FORMAT := "RGB_565"
 BOARD_HAS_NO_SELECT_BUTTON := true
 TARGET_RECOVERY_NO_MSM_BSP := true
 
@@ -88,7 +85,8 @@ TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
 TW_DEFAULT_EXTERNAL_STORAGE := true
 TW_INCLUDE_JB_CRYPTO := false
 TW_INCLUDE_L_CRYPTO := true
-TW_BRIGHTNESS_PATH := /sys/class/leds/wled:backlight/brightness
+TW_BRIGHTNESS_PATH := /sys/class/leds/lcd-backlight/brightness
 TW_MAX_BRIGHTNESS := 4095
 TW_NO_USB_STORAGE := true
+TW_EXCLUDE_MTP := true
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
