@@ -1,0 +1,250 @@
+#
+# Copyright 2014 The CyanogenMod Project
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+on early-init
+    chmod 666 /proc/cmdline
+
+on init
+    # Enable subsystem ramdump (Silent Reboot)
+    write /sys/bus/msm_subsys/devices/subsys0/restart_level "RELATED"
+    write /sys/bus/msm_subsys/devices/subsys1/restart_level "RELATED"
+    write /sys/bus/msm_subsys/devices/subsys2/restart_level "RELATED"
+    write /sys/bus/msm_subsys/devices/subsys3/restart_level "RELATED"
+
+    # SONY: Start the TrimArea Daemon
+    class_start sony_ta
+    exec /sbin/wait4tad_static
+
+    # create directory for scd
+    mkdir /dev/socket/scd 0755 system system
+
+on fs
+
+    mount_all fstab.qcom
+    setprop ro.crypto.fuse_sdcard true
+    wait /dev/block/platform/msm_sdcc.1/by-name/persist
+    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/persist /persist nosuid nodev barrier=1
+
+    mkdir /lta-label 0555 system system
+    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/LTALabel /lta-label nosuid nodev noatime noexec ro barrier=0
+    chown system system /lta-label
+    chmod 0555 /lta-label
+
+    wait /dev/block/platform/msm_sdcc.1/by-name/modem
+    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/modem /firmware ro shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
+
+    # TA support
+    class_start trimarea
+    start tad_static
+    exec /sbin/wait4tad_static
+    exec /system/bin/taimport
+
+    # Create a tmpfs for dynamic network mounting
+    mkdir /storage/remote  0700 root system
+    mount tmpfs tmpfs /storage/remote mode=0750,uid=0,gid=1028,size=1024k,nr_inodes=256
+
+on post-fs
+    # Change to socket location on libkeyctrl/suntory for /data encryption
+    mkdir /dev/socket/suntory 0755 system system
+
+    exec /system/bin/chargemon
+    write /sys/class/power_supply/battery/discharging_enable_for_shutdown 1
+
+on post-fs-data
+    mkdir /data/credmgr 0700 system system
+    mkdir /data/smime 0770 root smime_keystore
+    mkdir /data/pc 0700 radio radio
+    # Remove lost+found in user and userdebug
+    mkdir /data/tombstones 0755 system system
+    mkdir /data/tombstones/vendor 0755 system system
+    mkdir /data/crashsms 0711 system system
+    mkdir /data/crashsms/crashes 0755 system system
+    mkdir /data/app-skin 0771 system system
+
+    #SONY_BEGIN (Indication of Mobile Network Information 2.0)
+    setprop persist.radio.rat_on legacy
+
+    # Update WIFI MAC address
+    mkdir /data/misc/wifi/prima 0775 wifi wifi
+    exec /system/bin/mac-update
+
+    # communicate with mpdecision and thermald
+    mkdir /dev/socket/mpdecision 0770 system system
+    chmod 2770 /dev/socket/mpdecision
+
+    # Flash LED
+    chown system camera /sys/class/leds/torch-light/brightness
+    chmod 0660 /sys/class/leds/torch-light/brightness
+
+on early-boot
+    start ta_qmi_service
+    start sct_service
+
+on boot
+    start qcamerasvr
+
+    exec /system/bin/taimport property
+
+    # Enable Wi-Fi EAP SIM
+    setprop ro.wifi.eap_sim_enabled true
+
+    # Do not power down SIM in flight mode (required for Wi-Fi EAP-SIM)
+    setprop persist.radio.apm_sim_not_pwdn 1
+
+    # permissions for NFC
+    setprop ro.nfc.port "I2C"
+    chmod 0600 /dev/pn544
+    chown nfc nfc /dev/pn544
+
+    # Backlight
+    chown system system /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/leds/keyboard-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/leds/button-backlight/brightness
+    chown system system /sys/class/leds/jogball-backlight/brightness
+
+    # LED
+    chown root system /sys/class/leds/rgb_red/brightness
+    chown root system /sys/class/leds/rgb_green/brightness
+    chown root system /sys/class/leds/rgb_blue/brightness
+
+    chown root system /sys/class/leds/rgb_red/blink
+    chown root system /sys/class/leds/rgb_red/duty_pcts
+    chown root system /sys/class/leds/rgb_red/ramp_step_ms
+    chown root system /sys/class/leds/rgb_green/blink
+    chown root system /sys/class/leds/rgb_green/duty_pcts
+    chown root system /sys/class/leds/rgb_green/ramp_step_ms
+    chown root system /sys/class/leds/rgb_blue/blink
+    chown root system /sys/class/leds/rgb_blue/duty_pcts
+    chown root system /sys/class/leds/rgb_blue/ramp_step_ms
+
+    chown root system /sys/class/illumination/0
+    chown root system /sys/class/illumination/1
+    chown root system /sys/class/illumination/2
+    chown root system /sys/class/illumination/3
+    chown root system /sys/class/illumination/4
+    chown root system /sys/class/illumination/5
+    chown root system /sys/class/illumination/6
+    chown root system /sys/class/illumination/7
+    chown root system /sys/class/illumination/8
+
+    chmod 0664 /sys/class/leds/rgb_red/brightness
+    chmod 0664 /sys/class/leds/rgb_green/brightness
+    chmod 0664 /sys/class/leds/rgb_blue/brightness
+    chmod 0664 /sys/class/leds/rgb_red/flashmode
+    chmod 0664 /sys/class/leds/rgb_green/flashmode
+    chmod 0664 /sys/class/leds/rgb_blue/flashmode
+    chmod 0664 /sys/class/leds/rgb_red/onms
+    chmod 0664 /sys/class/leds/rgb_green/onms
+    chmod 0664 /sys/class/leds/rgb_blue/onms
+    chmod 0664 /sys/class/leds/rgb_red/offms
+    chmod 0664 /sys/class/leds/rgb_green/offms
+    chmod 0664 /sys/class/leds/rgb_blue/offms
+    chmod 0664 /sys/class/leds/rgb_red/tunebrightness
+    chmod 0664 /sys/class/leds/rgb_green/tunebrightness
+    chmod 0664 /sys/class/leds/rgb_blue/tunebrightness
+    chmod 0664 /sys/class/illumination/0
+    chmod 0664 /sys/class/illumination/1
+    chmod 0664 /sys/class/illumination/2
+    chmod 0664 /sys/class/illumination/3
+    chmod 0664 /sys/class/illumination/4
+    chmod 0664 /sys/class/illumination/5
+    chmod 0664 /sys/class/illumination/6
+    chmod 0664 /sys/class/illumination/7
+    chmod 0664 /sys/class/illumination/8
+
+# [CCI] MEMSIC sensor
+mkdir /data/misc/sensors 0777 system system
+
+# SONY: TrimArea Daemon
+# Last 2 args: start block(blk size 128k), number of blocks(partitionsize(kb)/128(kb))
+service tad_static /sbin/tad_static /dev/block/mmcblk0 1,16
+    user root
+    group root
+    socket tad stream 0660 system sony_ta
+    class sony_ta
+
+service updatemiscta /system/bin/updatemiscta
+    class main
+    user root
+    oneshot
+
+# [CCI] MEMSIC sensor daemon
+service memsicd /system/bin/memsicd
+    class main
+    oneshot
+
+# Mike 20140206, add illumination daemon
+service led_service /system/bin/led_service
+    class main
+    socket led_socket stream 660 system system
+    user system
+    group system
+
+# Trim Area QMI service
+service ta_qmi_service /system/bin/ta_qmi_service
+    user root
+    disabled
+
+# Secure Config Transfer service
+service sct_service /system/bin/sct_service
+    user root
+    disabled
+
+service scd /system/bin/scd
+    class main
+    user system
+    group system
+
+# Start suntrold
+service suntrold /system/bin/suntrold
+    user system
+    group system
+    oneshot
+    class main
+
+#start camera server as daemon
+service qcamerasvr /system/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+
+# Start Credential manager daemon
+service credmgrd /system/bin/credmgrd
+    user system
+    group system
+    socket credmgr stream 0660 system system
+    class main
+
+# bugreport is triggered by holding down volume down, volume up and power
+service bugreport /system/bin/dumpstate -d -p -B \
+        -o /data/data/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116
+
+# Update WIFI MAC address
+service mac-update /system/bin/mac-update
+    class main
+    user wifi
+    oneshot
+
+on property:init.svc.bootanim=running
+    # Clear Sony boot splash
+    write /sys/class/graphics/fb0/blank 1
+    write /sys/class/graphics/fb0/blank 0
+

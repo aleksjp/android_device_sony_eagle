@@ -26,10 +26,11 @@ $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 PRODUCT_NAME := cm_eagle
 PRODUCT_DEVICE := eagle
 
-PRODUCT_AAPT_CONFIG := normal hdpi
+# This device is hdpi.
+PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRODUCT_NAME=D2303 \
-    BUILD_FINGERPRINT=Sony/D2303/D2303:4.4.4/18.3.1.C.0.21/2n9_bg:user/release-keys \
-    PRIVATE_BUILD_DESC="D2303-user 18.3.1.C.0.21 2n9_bg release-keys"
+PRODUCT_NAME=D2303 \
+BUILD_FINGERPRINT=Sony/D2303/D2303:4.4.4/18.3.1.C.1.17/7nt3bg:user/release-keys \
+PRIVATE_BUILD_DESC="D2303-user 4.4.4 18.3.1.C.1.17 7nt3bg release-keys"

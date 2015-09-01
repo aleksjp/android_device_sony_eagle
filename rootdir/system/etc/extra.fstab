@@ -7,6 +7,4 @@
 
 # blk_device2           # mount_point           fs_type2    fs_options2     flags (not used in extra.fstab code)
 #/dev/block/sda		/storage/usbdisk0 	auto	    defaults		defaults
-#/dev/block/mmcblk1p1    /sdcard                 auto	    defaults		defaults 
-/devices/platform/msm_sdcc.2/mmc_host  /storage/sdcard1  auto    defaults		defaults
-/devices/platform/msm_hsusb_host       /storage/usbdisk   auto    defaults		defaults
+#/dev/block/mmcblk1p1    /sdcard                 auto	    defaults		defaults
